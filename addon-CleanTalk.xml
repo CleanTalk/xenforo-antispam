@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="0.9" version_id="0" url="https://cleantalk.org" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="0.9.1" version_id="0" url="https://cleantalk.org" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -23,8 +23,8 @@
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="CleanTalk_Listener_LoadClassController" callback_method="loadClassListener" active="1" hint="" description="Listens for XenForo_ControllerPublic_Register class"/>
-    <listener event_id="load_class_model" execute_order="10" callback_class="CleanTalk_Listener_LoadClassModel" callback_method="loadClassListener" active="1" hint="" description="Listens for XenForo_Model_SpamPrevention class"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="CleanTalk_Listener_LoadClassController" callback_method="loadClassListener" active="1" hint="XenForo_ControllerPublic_Register" description="Listens for XenForo_ControllerPublic_Register class"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="CleanTalk_Listener_LoadClassModel" callback_method="loadClassListener" active="1" hint="XenForo_Model_SpamPrevention" description="Listens for XenForo_Model_SpamPrevention class"/>
   </code_event_listeners>
   <cron/>
   <email_templates>
