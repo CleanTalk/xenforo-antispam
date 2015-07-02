@@ -82,6 +82,10 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 	$ct->server_url = $ct_ws['server_url'];
 	$ct->server_ttl = $ct_ws['server_ttl'];
 	$ct->server_changed = $ct_ws['server_changed'];
+	
+	$options = XenForo_Application::getOptions();
+	$ct_options=array('enabled' => $options->get('cleantalk', 'enabled'),
+		'apikey' => $options->get('cleantalk', 'apikey'));
 
 	$sender_info = json_encode(
 	    array(
@@ -89,12 +93,13 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
     		'REFFERRER' => $refferrer,
     		'post_url' => $refferrer,
     		'USER_AGENT' => $user_agent,
+    		'ct_options' => json_encode($ct_options)
 	    )
 	);
 
 	$ct_request = new CleantalkRequest();
 	$ct_request->auth_key = $ct_authkey;
-	$ct_request->agent = 'xenforo-100';
+	$ct_request->agent = 'xenforo-120';
 	$ct_request->response_lang = 'en';
 	$ct_request->js_on = $checkjs;
 	$ct_request->sender_info = $sender_info;
