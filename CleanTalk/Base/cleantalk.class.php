@@ -2,7 +2,7 @@
 /**
  * Cleantalk base class
  *
- * @version 2.0
+ * @version 2.0.0
  * @package Cleantalk
  * @subpackage Base
  * @author Cleantalk team (welcome@cleantalk.org)
@@ -1055,6 +1055,7 @@ function sendRawRequest($url,$data,$isJSON=false,$timeout=3)
 	{
 		$data= json_encode($data);
 	}
+	$curl_exec=false;
 	if (function_exists('curl_init') && function_exists('json_decode'))
 	{
 	
@@ -1072,10 +1073,14 @@ function sendRawRequest($url,$data,$isJSON=false,$timeout=3)
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		
-		$result = curl_exec($ch);
-		curl_close($ch);
+		$result = @curl_exec($ch);
+		if($result!==false)
+		{
+			$curl_exec=true;
+		}
+		@curl_close($ch);
 	}
-	else
+	if(!$curl_exec)
 	{
 		$opts = array(
 		    'http'=>array(
