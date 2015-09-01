@@ -67,7 +67,8 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 	if (!isset($_COOKIE[$field_name])) {
 	    $checkjs = NULL;
 	}
-	elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue()) {
+	//elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue()) {
+	elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray())) {
 	    $checkjs = 1;
 	}
 	else {
@@ -99,7 +100,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
 	$ct_request = new CleantalkRequest();
 	$ct_request->auth_key = $ct_authkey;
-	$ct_request->agent = 'xenforo-120';
+	$ct_request->agent = 'xenforo-100';
 	$ct_request->response_lang = 'en';
 	$ct_request->js_on = $checkjs;
 	$ct_request->sender_info = $sender_info;
