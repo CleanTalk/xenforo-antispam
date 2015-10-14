@@ -28,12 +28,26 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 	    $spam_check['sender_email'] = $user['email'];
 	    $spam_check['sender_nickname'] = $user['username'];
 	    $spam_check['timezone'] = $user['timezone'];
+	    
+	    $field_name = CleanTalk_Base_CleanTalk::getCheckjsName();
+	    
+	   	if (!isset($_COOKIE[$field_name])) {
+	   	    $checkjs = NULL;
+	   	}
+	   	//elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue()) {
+	   	elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray())) {
+	   	    $checkjs = 1;
+	   	}
+	   	else {
+	   	    $checkjs = 0;
+	   	}
 
 	    $spam_result = $this->_checkSpam($spam_check, $options);
 	    if (isset($spam_result)
 		&& is_array($spam_result)
 		&& $spam_result['errno'] == 0
-		&& $spam_result['allow'] != 1
+		&& $spam_result['allow'] != 1 ||
+		($spam_result['errno'] !=0 && $checkjs != 1)
 	    ) {
 		$decision = self::RESULT_DENIED;
 		$this->_resultDetails[] = array(
@@ -100,7 +114,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
 	$ct_request = new CleantalkRequest();
 	$ct_request->auth_key = $ct_authkey;
-	$ct_request->agent = 'xenforo-130';
+	$ct_request->agent = 'xenforo-100';
 	$ct_request->response_lang = 'en';
 	$ct_request->js_on = $checkjs;
 	$ct_request->sender_info = $sender_info;
