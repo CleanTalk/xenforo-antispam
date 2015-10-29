@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="1.0.0" version_id="1" url="https://cleantalk.org" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="1.4.1" version_id="1" url="https://cleantalk.org" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -7,10 +7,17 @@
     <template title="option_template_CleanTalk"><![CDATA[<xen:checkboxunit hint="{$preparedOption.hint}">
     <xen:label>{xen:phrase cleantalk_options_title}:</xen:label>
     <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled]" selected="{$preparedOption.option_value.enabled}" label="{xen:phrase cleantalk_options_enabled}">
+     <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][link]" selected="{$preparedOption.option_value.link}" label="{xen:phrase cleantalk_options_link}"><br />
+     {xen:phrase cleantalk_options_link_explain}
         <xen:disabled>
             <div>{xen:phrase cleantalk_options_apikey}:</div>
             <xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][apikey]" value="{$preparedOption.option_value.apikey}" inputclass="indented" />
             <p class="hint">{xen:phrase cleantalk_options_apikey_explain}</p>
+        </xen:disabled>
+        <xen:disabled>
+            <div>{xen:phrase cleantalk_options_num_mes}:</div>
+            <xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][num_mes]" value="{$preparedOption.option_value.num_mes}" inputclass="indented" />
+            <p class="hint">{xen:phrase cleantalk_options_num_mes_explain}</p>
         </xen:disabled>
     </xen:option>
     <xen:html>
@@ -44,6 +51,8 @@
       <default_value>a:1:{s:7:"enabled";s:1:"1";}</default_value>
       <edit_format_params>option_template_CleanTalk</edit_format_params>
       <sub_options>enabled
+link
+num_mes
 apikey</sub_options>
       <relation group_id="spam" display_order="5"/>
       <relation group_id="usersAndRegistration" display_order="5"/>
@@ -59,6 +68,10 @@ apikey</sub_options>
     <phrase title="cleantalk_options_apikey" version_id="1" version_string="1.0"><![CDATA[Access key]]></phrase>
     <phrase title="cleantalk_options_apikey_explain" version_id="1" version_string="1.0"><![CDATA[Click <a target="_blank" href="https://cleantalk.org/register?platform=xenforo">here</a> to get access key.]]></phrase>
     <phrase title="cleantalk_options_enabled" version_id="1" version_string="1.0"><![CDATA[Check new registrations against the CleanTalk antispam service.]]></phrase>
+    <phrase title="cleantalk_options_link" version_id="1" version_string="1.0"><![CDATA[Tell others about CleanTalk]]></phrase>
+    <phrase title="cleantalk_options_link_explain" version_id="1" version_string="1.0"><![CDATA[Checking this box places a small link under the comment form that lets others know what anti-spam tool protects your site.]]></phrase>
+    <phrase title="cleantalk_options_num_mes" version_id="1" version_string="1.0"><![CDATA[Check only first N messages]]></phrase>
+    <phrase title="cleantalk_options_num_mes_explain" version_id="1" version_string="1.0"><![CDATA[Don't check comments for users, that have above N approved comments. Leave 0 to check all comments.]]></phrase>
     <phrase title="cleantalk_options_title" version_id="1" version_string="1.0"><![CDATA[Antispam by CleanTalk]]></phrase>
     <phrase title="cleantalk_response" version_id="1" version_string="1.0"><![CDATA[CleanTalk: {response}]]></phrase>
   </phrases>
