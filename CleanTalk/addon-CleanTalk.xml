@@ -79,7 +79,7 @@ apikey</sub_options>
   <style_properties/>
   <templates/>
   <public_template_modifications>
-    <modification template="register_form" modification_key="cleantalk_register_form" description="Adds some script to default register from template" execution_order="10" enabled="1" action="preg_replace">
+    <modification template="footer" modification_key="cleantalk_register_form" description="Adds some script to default register from template" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[/$/]]></find>
       <replace><![CDATA[<!-- CleanTalk.Org addon -->
 <xen:callback class="CleanTalk_Base_CleanTalk" method="getTemplateAddon"></xen:callback>
