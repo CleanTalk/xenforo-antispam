@@ -51,6 +51,8 @@
       <default_value>a:1:{s:7:"enabled";s:1:"1";}</default_value>
       <edit_format_params>option_template_CleanTalk</edit_format_params>
       <sub_options>enabled
+link
+num_mes
 apikey</sub_options>
       <relation group_id="spam" display_order="5"/>
       <relation group_id="usersAndRegistration" display_order="5"/>
