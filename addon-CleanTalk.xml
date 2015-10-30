@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="1.4.2" version_id="1" url="https://cleantalk.org" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="1.4.3" version_id="1" url="https://cleantalk.org" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
     <template title="option_template_CleanTalk"><![CDATA[<xen:checkboxunit hint="{$preparedOption.hint}">
     <xen:label>{xen:phrase cleantalk_options_title}:</xen:label>
+    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][link]" selected="{$preparedOption.option_value.link}" label="{xen:phrase cleantalk_options_link}"><br />
+    </xen:option>
     <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled]" selected="{$preparedOption.option_value.enabled}" label="{xen:phrase cleantalk_options_enabled}">
-     <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][link]" selected="{$preparedOption.option_value.link}" label="{xen:phrase cleantalk_options_link}"><br />
-     {xen:phrase cleantalk_options_link_explain}
         <xen:disabled>
             <div>{xen:phrase cleantalk_options_apikey}:</div>
             <xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][apikey]" value="{$preparedOption.option_value.apikey}" inputclass="indented" />
@@ -51,8 +51,6 @@
       <default_value>a:1:{s:7:"enabled";s:1:"1";}</default_value>
       <edit_format_params>option_template_CleanTalk</edit_format_params>
       <sub_options>enabled
-link
-num_mes
 apikey</sub_options>
       <relation group_id="spam" display_order="5"/>
       <relation group_id="usersAndRegistration" display_order="5"/>
