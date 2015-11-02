@@ -31,6 +31,7 @@ class CleanTalk_Base_CleanTalk {
     public static function getTemplateAddon() {
 	static $show_flag = TRUE;
 	$ret_val = '';
+	$options = XenForo_Application::getOptions();
 
 	if ($show_flag) {
 	    $show_flag = FALSE;
@@ -44,7 +45,10 @@ function ctSetCookie(c_name, value) {
 ctSetCookie("%s", "%s");
 </script>';
 	    $ret_val = sprintf($js_template, $field_name, $ct_check_value);
-	    $ret_val.="<div style='width:100%;text-align:center'><a href='https://cleantalk.org/xenforo-antispam-addon'>XenForo spam</a> blocked by CleanTalk.</div>";
+	    if($options->get('cleantalk', 'link'))
+	    {
+	    	$ret_val.="<div style='width:100%;text-align:center'><a href='https://cleantalk.org/xenforo-antispam-addon'>XenForo spam</a> blocked by CleanTalk.</div>";
+	    }
 	}
 	return $ret_val;
     }
