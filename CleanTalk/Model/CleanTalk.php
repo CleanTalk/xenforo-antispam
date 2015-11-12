@@ -1,5 +1,4 @@
 <?php
-
 class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
     protected function _allowRegistration(array $user, Zend_Controller_Request_Http $request) {
