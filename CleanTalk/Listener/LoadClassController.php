@@ -1,5 +1,4 @@
 <?php
-
 class CleanTalk_Listener_LoadClassController {
 
         public static function loadClassListener($class, &$extend) {
