@@ -7,7 +7,7 @@ class CleanTalk_Base_CleanTalk {
     public static function hookAdminSettings(XenForo_Visitor &$visitor )
     {
     	$options = XenForo_Application::getOptions();
-		if ($options->get('cleantalk', 'enabled') && sizeof($_POST)>0 && isset($_POST['options']) && isset($_POST['options']['cleantalk']))
+		if ($options->get('cleantalk', 'enabled_reg') && sizeof($_POST)>0 && isset($_POST['options']) && isset($_POST['options']['cleantalk']))
 		{
 			require_once 'CleanTalk/Base/cleantalk.class.php';
 			$ct_ws = array(
@@ -83,6 +83,8 @@ ctSetCookie("%s", "%s");
 	    	$ret_val.="<div style='width:100%;text-align:center'><a href='https://cleantalk.org/xenforo-antispam-addon'>XenForo spam</a> blocked by CleanTalk.</div>";
 	    }
 	}
+//	XenForo_Application::getSession()->set('ct_submit_comment_time', time()); - got error 'The session has been saved and is now read-only'
+//	XenForo_Application::setSimpleCacheData('ct_submit_comment_time', time());
 	return $ret_val;
     }
 
