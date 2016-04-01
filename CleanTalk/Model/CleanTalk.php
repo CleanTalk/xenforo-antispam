@@ -13,11 +13,23 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
         return $decisions;
     }
 
+    protected function _allowMessage($content, array $extraParams = array(), Zend_Controller_Request_Http $request) {
+	$decisions = parent::_allowMessage($content, $extraParams, $request);
+	if (!is_array($decisions)) {
+	    $decisions = array(self::RESULT_ALLOWED);
+	}
+	if (!is_array($this->_resultDetails)) {
+	    $this->_resultDetails = array();
+	}
+	$decisions[] = $this->_checkMessage($content, $extraParams, $request);
+        return $decisions;
+    }
+
     protected function _checkNewUser(array $user, Zend_Controller_Request_Http $request) {
         $decision = self::RESULT_ALLOWED;
 
 	$options = XenForo_Application::getOptions();
-	if ($options->get('cleantalk', 'enabled')) {
+	if ($options->get('cleantalk', 'enabled_reg')) {
 	    if(!is_array($this->_resultDetails)) {
 		$this->_resultDetails = array();
 	    }
@@ -27,6 +39,59 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 	    $spam_check['sender_email'] = $user['email'];
 	    $spam_check['sender_nickname'] = $user['username'];
 	    $spam_check['timezone'] = $user['timezone'];
+	    
+	    $field_name = CleanTalk_Base_CleanTalk::getCheckjsName();
+	    
+	   	if (!isset($_COOKIE[$field_name])) {
+	   	    $checkjs = NULL;
+	   	}
+	   	//elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue()) {
+	   	elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray())) {
+	   	    $checkjs = 1;
+	   	}
+	   	else {
+	   	    $checkjs = 0;
+	   	}
+
+	    $spam_result = $this->_checkSpam($spam_check, $options);
+	    if (isset($spam_result)
+		&& is_array($spam_result)
+		&& $spam_result['errno'] == 0
+		&& $spam_result['allow'] != 1 ||
+		($spam_result['errno'] !=0 && $checkjs != 1)
+	    ) {
+		$decision = self::RESULT_DENIED;
+		$this->_resultDetails[] = array(
+        	    'phrase' => 'cleantalk_response',
+        	    'data' => array('response' => $spam_result['ct_result_comment']
+        	    )
+		);
+	    }
+
+	}
+        return $decision;
+    }
+
+    protected function _checkMessage($content, array $extraParams = array(), Zend_Controller_Request_Http $request) {
+        $decision = self::RESULT_ALLOWED;
+
+	$options = XenForo_Application::getOptions();
+	if ($options->get('cleantalk', 'enabled_comm')) {
+	    if(!is_array($this->_resultDetails)) {
+		$this->_resultDetails = array();
+	    }
+
+            $visitor = XenForo_Visitor::getInstance();
+            
+	    $spam_check = array();
+	    $spam_check['type'] = 'comment';
+            $spam_check['sender_email'] = $visitor['email'];
+            $spam_check['sender_nickname'] = $visitor['username'];
+            $spam_check['message_body'] = $content;
+
+//	    $spam_check['sender_email'] = $user['email'];
+//	    $spam_check['sender_nickname'] = $user['username'];
+//	    $spam_check['timezone'] = $user['timezone'];
 	    
 	    $field_name = CleanTalk_Base_CleanTalk::getCheckjsName();
 	    
@@ -98,8 +163,11 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 	$ct->server_changed = $ct_ws['server_changed'];
 	
 	$options = XenForo_Application::getOptions();
-	$ct_options=array('enabled' => $options->get('cleantalk', 'enabled'),
-		'apikey' => $options->get('cleantalk', 'apikey'));
+	$ct_options=array(
+		'enabled_reg' => $options->get('cleantalk', 'enabled_reg'),
+		'enabled_comm' => $options->get('cleantalk', 'enabled_comm'),
+		'apikey' => $options->get('cleantalk', 'apikey')
+	);
 
 	$sender_info = json_encode(
 	    array(
@@ -126,41 +194,42 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 	switch ($spam_check['type']) {
 		case 'comment':
 		      $stored_time = XenForo_Application::getSession()->get('ct_submit_comment_time');
+                      //$stored_time = XenForo_Application::getSimpleCacheData('ct_submit_comment_time');
 		      if (isset($stored_time)) {
 		        $ct_submit_time = time() - $stored_time;
 		      }
 		      $timelabels_key = 'e_comm';
 
 		      $ct_request->submit_time = $ct_submit_time;
-		      $ct_request->message = $spam_check['message_title'] . " \n\n" . $spam_check['message_body'];
+		      $ct_request->message = $spam_check['message_body'];
 
-		      $example = '';
-		      $a_example = array();
-		      $a_example['title'] = $spam_check['example_title'];
-		      $a_example['body'] = $spam_check['example_body'];
-		      $a_example['comments'] = $spam_check['example_comments'];
+//		      $example = '';
+//		      $a_example = array();
+//		      $a_example['title'] = $spam_check['example_title'];
+//		      $a_example['body'] = $spam_check['example_body'];
+//		      $a_example['comments'] = $spam_check['example_comments'];
 
 		      // Additional info.
 		      $post_info = '';
 		      $a_post_info['comment_type'] = 'comment';
 
 		      // JSON format.
-		      $example = json_encode($a_example);
+//		      $example = json_encode($a_example);
 		      $post_info = json_encode($a_post_info);
 
 		      // Plain text format.
-		      if ($example === FALSE) {
-		        $example = '';
-		        $example .= $a_example['title'] . " \n\n";
-		        $example .= $a_example['body'] . " \n\n";
-		        $example .= $a_example['comments'];
-		      }
+//		      if ($example === FALSE) {
+//		        $example = '';
+//		        $example .= $a_example['title'] . " \n\n";
+//		        $example .= $a_example['body'] . " \n\n";
+//		        $example .= $a_example['comments'];
+//		      }
 		      if ($post_info === FALSE) {
 		        $post_info = '';
 		      }
 
 		      // Example text + last N comments in json or plain text format.
-		      $ct_request->example = $example;
+//		      $ct_request->example = $example;
 		      $ct_request->post_info = $post_info;
 
 		      $ct_result = $ct->isAllowMessage($ct_request);
