@@ -26,7 +26,7 @@ class CleanTalk_Base_CleanTalk {
 			
 			$ct_request = new CleantalkRequest();
 			$ct_request->auth_key = $_POST['options']['cleantalk']['apikey'];
-			$ct_request->agent = 'xenforo-15';
+			$ct_request->agent = 'xenforo-16';
 			$ct_request->response_lang = 'en';
 			$ct_request->js_on = 1;
 			$ct_request->sender_email = "good@cleantalk.org";
