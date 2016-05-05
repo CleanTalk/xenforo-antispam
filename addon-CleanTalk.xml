@@ -49,7 +49,7 @@
   <email_template_modifications/>
   <optiongroups>
     <option option_id="cleantalk" edit_format="template" data_type="array" can_backup="1">
-      <default_value>a:1:{s:7:"enabled";s:7:"disbled";s:1:"1";}</default_value>
+      <default_value>a:4:{s:11:"enabled_reg";s:1:"0";s:12:"enabled_comm";s:1:"0";s:4:"link";s:1:"0";s:6:"apikey";s:0:"";}</default_value>
       <edit_format_params>option_template_CleanTalk</edit_format_params>
       <sub_options>enabled_reg
 enabled_comm
