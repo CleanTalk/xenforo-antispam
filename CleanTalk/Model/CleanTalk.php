@@ -188,7 +188,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
 		$ct_request = new CleantalkRequest();
 		$ct_request->auth_key = $ct_authkey;
-		$ct_request->agent = 'xenforo-22';
+		$ct_request->agent = 'xenforo-23';
 		$ct_request->response_lang = 'en';
 		$ct_request->js_on = $checkjs;
 		$ct_request->sender_info = $sender_info;

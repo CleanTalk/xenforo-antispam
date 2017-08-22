@@ -12,13 +12,16 @@ class CleanTalk_Base_CleanTalk {
 			ADD COLUMN `ct_check` VARCHAR(35) NULL AFTER `is_staff`;',
 		'SlashUserTable' => '
 			ALTER TABLE `xf_user`
-			DROP COLUMN `ct_check`;'
+			DROP COLUMN `ct_check`;',
+		'upgradeUserTable' =>'
+			SHOW COLUMNS FROM `xf_user` LIKE "ct_check";' 
 	);
 	
 	/* Insatll Hook */
 	public static function installHook(){
 		$db = XenForo_Application::get('db');
-		$db->query(self::$queries['extendUserTable']);
+		if (empty($db->fetchAll(self::$queries['upgradeUserTable'])))
+			$db->query(self::$queries['extendUserTable']);
 	}
 	
 	/* Unnistall Hook */
@@ -306,7 +309,7 @@ class CleanTalk_Base_CleanTalk {
 
 			$ct_request = new CleantalkRequest();
 			$ct_request->auth_key = $_POST['options']['cleantalk']['apikey'];
-        		$ct_request->feedback = '0:xenforo-22';
+        		$ct_request->feedback = '0:xenforo-23';
         		$ct->sendFeedback($ct_request);
 		}
     }
