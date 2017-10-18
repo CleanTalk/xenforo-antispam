@@ -25,7 +25,7 @@ class CleanTalk_Listener_LoadClassController {
                 }
         }
 		
-		public static function loadClassListenerMisc($class, &$extend) {
+        public static function loadClassListenerMisc($class, &$extend) {
                 if ($class == 'XenForo_ControllerPublic_Misc') {
                         $extend[] = 'CleanTalk_ControllerPublic_CleanTalkMisc';
                 }

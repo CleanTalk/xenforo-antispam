@@ -20,7 +20,7 @@ class CleanTalk_Base_CleanTalk {
 	/* Insatll Hook */
 	public static function installHook(){
 		$db = XenForo_Application::get('db');
-		if (empty($db->fetchAll(self::$queries['upgradeUserTable'])))
+		if (count($db->fetchAll(self::$queries['upgradeUserTable'])) === 0)
 			$db->query(self::$queries['extendUserTable']);
 	}
 	
