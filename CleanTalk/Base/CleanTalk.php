@@ -370,7 +370,7 @@ class CleanTalk_Base_CleanTalk {
 	    $ct_check_def = self::getCheckjsValue();
 	    $ct_check_value = self::getCheckjsValue();
 	    self::ctSetCookie();
-	    
+	    self::ctSFWTest();
 	    $js_template = '<script>
 	var d = new Date(), 
 		ctTimeMs = new Date().getTime(),
@@ -479,6 +479,39 @@ class CleanTalk_Base_CleanTalk {
         // Cookies test
         $cookie_test_value['check_value'] = md5($cookie_test_value['check_value']);
         setcookie('ct_cookies_test', json_encode($cookie_test_value), 0, '/');	    	
+    }
+
+    static public function ctSFWTest()
+    {
+		if (XenForo_Application::getOptions()->get('cleantalk', 'enabled_sfw') && $_SERVER["REQUEST_METHOD"] == 'GET' && $_SERVER['SCRIPT_NAME'] !== '/admin.php')
+		{
+		   	$is_sfw_check = true;
+			$sfw = new CleantalkSFW();
+			$sfw->ip_array = (array)CleantalkSFW::ip_get(array('real'), true);	
+				
+            foreach($sfw->ip_array as $key => $value)
+            {
+		        if(isset($_COOKIE['ct_sfw_pass_key']) && $_COOKIE['ct_sfw_pass_key'] == md5($value . trim(XenForo_Application::getOptions()->get('cleantalk','apikey'))))
+		        {
+		          $is_sfw_check=false;
+		          if(isset($_COOKIE['ct_sfw_passed']))
+		          {
+		            @setcookie ('ct_sfw_passed'); //Deleting cookie
+		            $sfw->sfw_update_logs($value, 'passed');
+		          }
+		        }
+	      	} unset($key, $value);	
+
+			if($is_sfw_check)
+			{
+				$sfw->check_ip();
+				if($sfw->result)
+				{
+					$sfw->sfw_update_logs($sfw->blocked_ip, 'blocked');
+					$sfw->sfw_die(trim(XenForo_Application::getOptions()->get('cleantalk','apikey')));
+				}
+			}	      				
+		}    	
     }
 
 }
