@@ -1,4 +1,10 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/Cleantalk.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkSFW.php';
+
 class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
     protected function _allowRegistration(array $user, Zend_Controller_Request_Http $request) {
@@ -127,8 +133,6 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
 	protected function _checkSpam($spam_check, $options) {
 		
-		require_once 'CleanTalk/Base/cleantalk.class.php';
-
 		$ct_authkey = $options->get('cleantalk', 'apikey');
 
 		$dataRegistryModel = $this->getModelFromCache('XenForo_Model_DataRegistry');
@@ -182,33 +186,31 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 				'js_timezone' => $js_timezone,
 				'mouse_cursor_positions' => $pointer_data,
 				'key_press_timestamp' => $first_key_timestamp,
-				'page_set_timestamp' => $page_set_timestamp
+				'page_set_timestamp' => $page_set_timestamp,
+				'cookies_enabled' => $this->_ctCookiesTest(),
+				'REFFERRER_PREVIOUS' => isset($_COOKIE['ct_prev_referer']) ? $_COOKIE['ct_prev_referer'] : null,
 			)
 		);
 
 		$ct_request = new CleantalkRequest();
 		$ct_request->auth_key = $ct_authkey;
-		$ct_request->agent = 'xenforo-24';
+		$ct_request->agent = 'xenforo-25';
 		$ct_request->response_lang = 'en';
 		$ct_request->js_on = $checkjs;
 		$ct_request->sender_info = $sender_info;
 		$ct_request->sender_email = $spam_check['sender_email'];
 		$ct_request->sender_nickname = $spam_check['sender_nickname'];
-		$ct_request->sender_ip = $ct->ct_session_ip($_SERVER['REMOTE_ADDR']);
+        $ct_request->sender_ip = CleantalkHelper::ip_get(array('real'), false);
+        $ct_request->x_forwarded_for = CleantalkHelper::ip_get(array('x_forwarded_for'), false);
+        $ct_request->x_real_ip       = CleantalkHelper::ip_get(array('x_real_ip'), false);
+		$ct_request->submit_time = time() - intval($page_set_timestamp);
 
-		$ct_submit_time = NULL;
 		// session_start();
 		switch ($spam_check['type']) {
 			case 'comment':
-				$stored_time = XenForo_Application::getSession()->get('ct_submit_comment_time');
-				// $stored_time = XenForo_Application::getSimpleCacheData('ct_submit_comment_time');
-				
-				if (isset($stored_time))
-				$ct_submit_time = time() - $stored_time;
 				
 				$timelabels_key = 'e_comm';
 
-				$ct_request->submit_time = $ct_submit_time;
 				$ct_request->message = $spam_check['message_body'];
 
 				// $example = '';
@@ -244,15 +246,9 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 				break;
 
 				case 'register':
-					$stored_time = XenForo_Application::getSession()->get('ct_submit_register_time');
-					
-					if (isset($stored_time))
-						$ct_submit_time = time() - $stored_time;
 					
 					$timelabels_key = 'e_reg';
-					$ct_request->submit_time = $ct_submit_time;
 					$ct_request->tz = $spam_check['timezone'];
-
 					$ct_result = $ct->isAllowUser($ct_request);
 				break;
 
@@ -344,6 +340,27 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 		
 		// return filter_xss($err_str, array('a'));
 		return $err_str;
+    }
+
+    protected function _ctCookiesTest()
+    {
+        if(isset($_COOKIE['ct_cookies_test'])){
+            
+            $cookie_test = json_decode(stripslashes($_COOKIE['ct_cookies_test']), true);
+            
+            $check_srting = $options->get('cleantalk', 'apikey');
+            foreach($cookie_test['cookies_names'] as $cookie_name){
+                $check_srting .= isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : '';
+            } unset($cokie_name);
+            
+            if($cookie_test['check_value'] == md5($check_srting)){
+                return 1;
+            }else{
+                return 0;
+            }
+        }else{
+            return null;
+        }    	
     }
 
 }

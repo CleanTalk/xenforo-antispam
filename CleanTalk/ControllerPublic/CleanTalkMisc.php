@@ -1,4 +1,9 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/Cleantalk.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkSFW.php';
 
 class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_ControllerPublic_CleanTalkMisc {
 
@@ -47,8 +52,7 @@ class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_Controller
 
 	// CleanTalk Part
 				
-				
-				require_once 'CleanTalk/Base/cleantalk.class.php';
+			
 
 				$options = XenForo_Application::getOptions();
 				
@@ -105,29 +109,28 @@ class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_Controller
 						'js_timezone' => $js_timezone,
 						'mouse_cursor_positions' => $pointer_data,
 						'key_press_timestamp' => $first_key_timestamp,
-						'page_set_timestamp' => $page_set_timestamp
+						'page_set_timestamp' => $page_set_timestamp,
+						'cookies_enabled' => $this->_ctCookiesTest(),
+						'REFFERRER_PREVIOUS' => isset($_COOKIE['ct_prev_referer']) ? $_COOKIE['ct_prev_referer'] : null,
 					)
 				);
 
 				$ct_request = new CleantalkRequest();
 				$ct_request->auth_key = $ct_authkey;
-				$ct_request->agent = 'xenforo-22';
+				$ct_request->agent = 'xenforo-25';
 				$ct_request->response_lang = 'en';
 				$ct_request->js_on = $checkjs;
 				$ct_request->sender_info = $sender_info;
 				$ct_request->sender_email = $user['email'];
 				$ct_request->sender_nickname = $user['username'];
-				$ct_request->sender_ip = $ct->ct_session_ip($_SERVER['REMOTE_ADDR']);
-							
-				$ct_submit_time = NULL;
-								
-				$stored_time = XenForo_Application::getSession()->get('ct_submit_contact_time');
-				if (!empty($stored_time))
-					$ct_submit_time = time() - $stored_time;
+				$ct_request->sender_ip = CleantalkHelper::ip_get(array('real'), false);
+				$ct_request->x_forwarded_for = CleantalkHelper::ip_get(array('x_forwarded_for'), false);
+				$ct_request->x_real_ip       = CleantalkHelper::ip_get(array('x_real_ip'), false);
 				
 				$timelabels_key = 'e_comm';
 
-				$ct_request->submit_time = $ct_submit_time;
+				$ct_request->submit_time = time() - intval($page_set_timestamp);
+
 				$ct_request->message = 	$message = json_encode(array_merge(
 					array(
 						'subject' => $input['subject']), 
@@ -199,7 +202,6 @@ class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_Controller
 					return $this->responseError(new XenForo_Phrase($ct_result->comment));
 							
 			}else{
-				XenForo_Application::getSession()->set('ct_submit_contact_time', time());
 				return parent::actionContact();				
 			}
 		}
@@ -214,6 +216,27 @@ class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_Controller
 			$err_str = preg_replace('/\*\*\*/i', '', $ct_response);
 		
 		return $err_str;
+    }
+
+    protected function _ctCookiesTest()
+    {
+        if(isset($_COOKIE['ct_cookies_test'])){
+            
+            $cookie_test = json_decode(stripslashes($_COOKIE['ct_cookies_test']), true);
+            
+            $check_srting = $options->get('cleantalk', 'apikey');
+            foreach($cookie_test['cookies_names'] as $cookie_name){
+                $check_srting .= isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : '';
+            } unset($cokie_name);
+            
+            if($cookie_test['check_value'] == md5($check_srting)){
+                return 1;
+            }else{
+                return 0;
+            }
+        }else{
+            return null;
+        }    	
     }
 
 }

@@ -1,4 +1,10 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/Cleantalk.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkSFW.php';
+
 class CleanTalk_Base_CleanTalk {
 		
     static public function getCheckjsName() {
@@ -7,12 +13,36 @@ class CleanTalk_Base_CleanTalk {
     
 	/* Queries for install/uninstall hooks */
 	protected static $queries = array(
+		'installSFWTables_main'=> '
+			CREATE TABLE IF NOT EXISTS `xf_cleantalk_sfw` 
+			(
+				`network` int(10) unsigned NOT NULL,
+				`mask` int(10) unsigned NOT NULL,
+				KEY `network` (`network`)
+			);',
+		'installSFWTables_logs'=>'
+			CREATE TABLE IF NOT EXISTS `xf_cleantalk_sfw_logs` 
+			(
+					`ip` varchar(15) NOT NULL,
+					`all_entries` int(11) NOT NULL,
+					`blocked_entries` int(11) NOT NULL,
+					`entries_timestamp` int(11) NOT NULL,
+					KEY `ip` (`ip`)
+			);',
+		'dropSFWTables_main'=> '
+			DROP TABLE IF EXISTS `xf_cleantalk_sfw`;
+			',
+		'dropSFWTables_logs'=> '
+			DROP TABLE IF EXISTS `xf_cleantalk_sfw_logs`;
+			',
 		'extendUserTable' => '
 			ALTER TABLE `xf_user`           
-			ADD COLUMN `ct_check` VARCHAR(35) NULL AFTER `is_staff`;',
+			ADD COLUMN `ct_check` VARCHAR(35) NULL AFTER `is_staff`;
+			',
 		'SlashUserTable' => '
 			ALTER TABLE `xf_user`
-			DROP COLUMN `ct_check`;',
+			DROP COLUMN `ct_check`;
+			',
 		'upgradeUserTable' =>'
 			SHOW COLUMNS FROM `xf_user` LIKE "ct_check";' 
 	);
@@ -22,12 +52,17 @@ class CleanTalk_Base_CleanTalk {
 		$db = XenForo_Application::get('db');
 		if (count($db->fetchAll(self::$queries['upgradeUserTable'])) === 0)
 			$db->query(self::$queries['extendUserTable']);
+		$db->query(self::$queries['installSFWTables_main']);
+		$db->query(self::$queries['installSFWTables_logs']);
+
 	}
 	
 	/* Unnistall Hook */
 	public static function uninstallHook(){
 		$db = XenForo_Application::get('db');
 		$db->query(self::$queries['SlashUserTable']);
+		$db->query(self::$queries['dropSFWTables_main']);
+		$db->query(self::$queries['dropSFWTables_logs']);
 	}
 	
 	public static function CheckUsersOutput($content, $params, $template){
@@ -193,10 +228,7 @@ class CleanTalk_Base_CleanTalk {
 			$request['data'] = $data_to_send;
 			$url='https://api.cleantalk.org';
 			
-			if(!function_exists('sendRawRequest'))
-				require_once('cleantalk.class.php');
-			$result = sendRawRequest($url, $request, false, 5);
-			$result = json_decode($result, true);
+			$result = CleantalkHelper::api_method__spam_check_cms($options->get('cleantalk', 'apikey'), $data_to_send);
 			
 			if(isset($result['error_message'])){
 				error_log('CleanTalk plugin -> Check users -> Server returns error: '.$result['error_message']);
@@ -294,23 +326,14 @@ class CleanTalk_Base_CleanTalk {
                         !empty($_POST['options']['cleantalk']['apikey'])
                 )
 		{
-			require_once 'CleanTalk/Base/cleantalk.class.php';
-			$ct_ws = array(
-				'work_url' => 'http://moderate.cleantalk.org',
-				'server_url' => 'http://moderate.cleantalk.org',
-				'server_ttl' => 0,
-				'server_changed' => 0
-			    );
-			$ct = new Cleantalk();
-			$ct->work_url = $ct_ws['work_url'];
-			$ct->server_url = $ct_ws['server_url'];
-			$ct->server_ttl = $ct_ws['server_ttl'];
-			$ct->server_changed = $ct_ws['server_changed'];
+			CleantalkHelper::api_method_send_empty_feedback($_POST['options']['cleantalk']['apikey'], 'xenforo-25');
 
-			$ct_request = new CleantalkRequest();
-			$ct_request->auth_key = $_POST['options']['cleantalk']['apikey'];
-        		$ct_request->feedback = '0:xenforo-24';
-        		$ct->sendFeedback($ct_request);
+			if (isset($_POST['options']['cleantalk']['enabled_sfw']) && intval($_POST['options']['cleantalk']['enabled_sfw']) == 1)
+			{
+				$sfw = new CleantalkSFW();
+				$sfw->sfw_update($_POST['options']['cleantalk']['apikey']);
+				$sfw->send_logs($_POST['options']['cleantalk']['apikey']);
+			}
 		}
     }
     
@@ -346,6 +369,8 @@ class CleanTalk_Base_CleanTalk {
 	    $field_name = self::getCheckjsName();
 	    $ct_check_def = self::getCheckjsValue();
 	    $ct_check_value = self::getCheckjsValue();
+	    self::ctSetCookie();
+	    
 	    $js_template = '<script>
 	var d = new Date(), 
 		ctTimeMs = new Date().getTime(),
@@ -433,9 +458,27 @@ class CleanTalk_Base_CleanTalk {
 	    	$ret_val.="<div style='width:100%;text-align:center'><a href='https://cleantalk.org/xenforo-antispam-addon'>XenForo spam</a> blocked by CleanTalk.</div>";
 	    }
 	}
-//	XenForo_Application::getSession()->set('ct_submit_comment_time', time()); - got error 'The session has been saved and is now read-only'
-//	XenForo_Application::setSimpleCacheData('ct_submit_comment_time', time());
+
 	return $ret_val;
+    }
+
+    static public function ctSetCookie()
+    {
+        // Cookie names to validate
+        $cookie_test_value = array(
+            'cookies_names' => array(),
+            'check_value' => trim($options->get('cleantalk', 'apikey')),
+        );
+        // Pervious referer
+        if(!empty($_SERVER['HTTP_REFERER'])){
+            setcookie('ct_prev_referer', $_SERVER['HTTP_REFERER'], 0, '/');
+            $cookie_test_value['cookies_names'][] = 'ct_prev_referer';
+            $cookie_test_value['check_value'] .= $_SERVER['HTTP_REFERER'];
+        }           
+
+        // Cookies test
+        $cookie_test_value['check_value'] = md5($cookie_test_value['check_value']);
+        setcookie('ct_cookies_test', json_encode($cookie_test_value), 0, '/');	    	
     }
 
 }

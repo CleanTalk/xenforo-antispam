@@ -1,6 +1,8 @@
-xenforo-antispam
-================
-Version 2.4
-================
+# xenforo-antispam
+Xenforo anti-spam extension.
+# Version 2.5
 
-XenForo anti-spam addon.
+## How to install
+
+1) Upload "CleanTalk" folder to <your_xenforo>/library/ directory.
+2) Install "addon-CleanTalk.xml".
