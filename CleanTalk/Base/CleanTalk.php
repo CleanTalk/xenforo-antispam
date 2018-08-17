@@ -207,7 +207,6 @@ class CleanTalk_Base_CleanTalk {
 					INNER JOIN xf_ip ips
 					ON user.user_id = ips.user_id;
 			");
-			
 			$users_data = array();
 			$data_to_send = array();
 			foreach($result as $key => $value){
@@ -220,23 +219,16 @@ class CleanTalk_Base_CleanTalk {
 				$data_to_send[] = $ip;
 			}
 			$data_to_send = implode(',',$data_to_send);
-						
-			/*	Sending the request */
-			$request = Array();
-			$request['method_name'] = 'spam_check_cms';
-			$request['auth_key'] = $options->get('cleantalk', 'apikey');
-			$request['data'] = $data_to_send;
-			$url='https://api.cleantalk.org';
 			
 			$result = CleantalkHelper::api_method__spam_check_cms($options->get('cleantalk', 'apikey'), $data_to_send);
-			
+	
 			if(isset($result['error_message'])){
 				error_log('CleanTalk plugin -> Check users -> Server returns error: '.$result['error_message']);
 				return true;
 			}else{
 				$spam_users = array();
 				$sql_append = '';
-				foreach($result['data'] as $key => $value){
+				foreach($result as $key => $value){
 					if($value['appears'] == 1){
 						if(array_key_exists($key, $users_data)){
 							$spam_users[] = $users_data[$key];
@@ -244,7 +236,7 @@ class CleanTalk_Base_CleanTalk {
 					}
 				}
 			}
-			
+
 			if(count($spam_users)){
 				$sql = "
 					UPDATE xf_user user
