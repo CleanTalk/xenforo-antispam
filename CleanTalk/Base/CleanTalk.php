@@ -467,7 +467,7 @@ class CleanTalk_Base_CleanTalk {
         // Cookie names to validate
         $cookie_test_value = array(
             'cookies_names' => array(),
-            'check_value' => trim($options->get('cleantalk', 'apikey')),
+            'check_value' => trim(XenForo_Application::getOptions()->get('cleantalk', 'apikey')),
         );
         // Pervious referer
         if(!empty($_SERVER['HTTP_REFERER'])){

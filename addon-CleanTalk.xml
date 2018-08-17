@@ -6,19 +6,30 @@
   <admin_templates>
     <template title="option_template_CleanTalk"><![CDATA[<xen:checkboxunit hint="{$preparedOption.hint}">
     <xen:label>{xen:phrase cleantalk_options_title}:</xen:label>
-    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][link]" selected="{$preparedOption.option_value.link}" label="{xen:phrase cleantalk_options_link}"><br />
-    </xen:option>
-    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled_reg]" selected="{$preparedOption.option_value.enabled_reg}" label="{xen:phrase cleantalk_options_enabled_reg}">
+    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled]" selected="{$preparedOption.option_value.enabled}" label="{xen:phrase cleantalk_options_enabled}">
         <xen:disabled>
             <div>{xen:phrase cleantalk_options_apikey}:</div>
             <xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][apikey]" value="{$preparedOption.option_value.apikey}" inputclass="indented" />
-            <p class="hint">{xen:phrase cleantalk_options_apikey_explain}</p>
+            <p class="hint">{xen:phrase cleantalk_options_apikey_explain}</p>           
         </xen:disabled>
-    </xen:option>
-    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled_comm]" selected="{$preparedOption.option_value.enabled_comm}" label="{xen:phrase cleantalk_options_enabled_comm}">
-    </xen:option>
-    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled_sfw]" selected="{$preparedOption.option_value.enabled_sfw}" label="{xen:phrase cleantalk_options_enabled_sfw}">
-    </xen:option>    
+        <xen:disabled>
+            <xen:checkbox>
+              <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled_reg]" selected="{$preparedOption.option_value.enabled_reg}" label="{xen:phrase cleantalk_options_enabled_reg}"></xen:option>               
+            </xen:checkbox>
+        </xen:disabled>  
+        <xen:disabled>
+            <xen:checkbox>
+              <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled_comm]" selected="{$preparedOption.option_value.enabled_comm}" label="{xen:phrase cleantalk_options_enabled_comm}"></xen:option>               
+            </xen:checkbox>
+        </xen:disabled> 
+        <xen:disabled>
+            <xen:checkbox>
+              <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled_sfw]" selected="{$preparedOption.option_value.enabled_sfw}" label="{xen:phrase cleantalk_options_enabled_sfw}"></xen:option>               
+            </xen:checkbox>
+        </xen:disabled>                                                       
+    </xen:option> 
+    <xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][link]" selected="{$preparedOption.option_value.link}" label="{xen:phrase cleantalk_options_link}"><br />
+    </xen:option>              
     <xen:html>
         <input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
         {xen:raw $editLink}
@@ -54,9 +65,10 @@
     <group group_id="cleantalk_check_uesrs" display_order="1" debug_only="0"/>
     <group group_id="cleantalk_options" display_order="2" debug_only="0"/>
     <option option_id="cleantalk" edit_format="template" data_type="array" can_backup="1">
-      <default_value>a:5:{s:11:"enabled_reg";s:1:"0";s:12:"enabled_comm";s:1:"0";s:4:"link";s:1:"0";s:6:"apikey";s:0:"";s:14:"enabled_sfw";s:1:"0";}</default_value>
+      <default_value>a:1:{s:7:"enabled";s:1:"0";}</default_value>
       <edit_format_params>option_template_CleanTalk</edit_format_params>
-      <sub_options>enabled_reg
+      <sub_options>enabled
+enabled_reg
 enabled_comm
 link
 apikey
@@ -77,6 +89,7 @@ enabled_sfw</sub_options>
   </permissions>
   <phrases>
     <phrase title="cleantalk_error" version_id="1" version_string="1.0"><![CDATA[CleanTalk addon error]]></phrase>
+    <phrase title="cleantalk_options_enabled" version_id="1" version_string="1.0"><![CDATA[Turn on protection]]></phrase>    
     <phrase title="cleantalk_options_apikey" version_id="1" version_string="1.0"><![CDATA[Access key]]></phrase>
     <phrase title="cleantalk_options_apikey_explain" version_id="1" version_string="1.0"><![CDATA[Click <a target="_blank" href="https://cleantalk.org/register?platform=xenforo">here</a> to get access key.]]></phrase>
     <phrase title="cleantalk_options_enabled_comm" version_id="1" version_string="1.0"><![CDATA[Check users comments and threads against the CleanTalk antispam service.]]></phrase>
