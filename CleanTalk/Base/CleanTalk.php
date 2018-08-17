@@ -176,8 +176,8 @@ class CleanTalk_Base_CleanTalk {
 			
 			$ret_val .= '
 			<div style="text-align: center;">
-				<input type="submit" class="button primary" name="cleantalk_delete_spam_users" value="Delete selected spam-users" />
-				<input type="submit" class="button primary" name="cleantalk_delete_all_spam_users" value="Delete ALL spam-users" />
+				<input type="submit" class="button primary" name="cleantalk_delete_spam_users" value="Delete selected spam-users" onclick="return confirm(\'Are you sure?\')" />
+				<input type="submit" class="button primary" name="cleantalk_delete_all_spam_users" value="Delete ALL spam-users" onclick="return confirm(\'Are you sure?\')"/>
 				<br>
 				<h3 style="margin-top: 10px;">All user\'s post will be also deleted.</h3>
 			</div>
@@ -318,7 +318,7 @@ class CleanTalk_Base_CleanTalk {
                         !empty($_POST['options']['cleantalk']['apikey'])
                 )
 		{
-			CleantalkHelper::api_method_send_empty_feedback($_POST['options']['cleantalk']['apikey'], 'xenforo-25');
+				CleantalkHelper::api_method_send_empty_feedback($_POST['options']['cleantalk']['apikey'], 'xenforo-25');
 
 			if (isset($_POST['options']['cleantalk']['enabled_sfw']) && intval($_POST['options']['cleantalk']['enabled_sfw']) == 1)
 			{

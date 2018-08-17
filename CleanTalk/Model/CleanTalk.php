@@ -348,7 +348,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
             
             $cookie_test = json_decode(stripslashes($_COOKIE['ct_cookies_test']), true);
             
-            $check_srting = $options->get('cleantalk', 'apikey');
+            $check_srting = trim(XenForo_Application::getOptions()->get('cleantalk', 'apikey'));
             foreach($cookie_test['cookies_names'] as $cookie_name){
                 $check_srting .= isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : '';
             } unset($cokie_name);
