@@ -1,4 +1,6 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+
 /*
  * CleanTalk SpamFireWall base class
  * Compatible only with Wordpress.
