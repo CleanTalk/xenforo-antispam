@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkHelper.php';
 
 /*
  * CleanTalk SpamFireWall base class
@@ -205,8 +205,8 @@ class CleantalkSFW extends CleantalkHelper
 	public function sfw_die($api_key, $cookie_prefix = '', $cookie_domain = ''){
 		
 		// File exists?
-		if(file_exists($_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/sfw_die_page.html')){
-			$sfw_die_page = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/sfw_die_page.html');
+		if(file_exists(XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/sfw_die_page.html')){
+			$sfw_die_page = file_get_contents(XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/sfw_die_page.html');
 		}else{
 			die("IP BLACKLISTED");
 		}

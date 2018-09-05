@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="2.5" version_id="25" url="https://cleantalk.org" install_callback_class="CleanTalk_Base_CleanTalk" install_callback_method="installHook" uninstall_callback_class="CleanTalk_Base_CleanTalk" uninstall_callback_method="uninstallHook">
+<addon addon_id="CleanTalk" title="Antispam by CleanTalk" version_string="2.6" version_id="26" url="https://cleantalk.org" install_callback_class="CleanTalk_Base_CleanTalk" install_callback_method="installHook" uninstall_callback_class="CleanTalk_Base_CleanTalk" uninstall_callback_method="uninstallHook">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>

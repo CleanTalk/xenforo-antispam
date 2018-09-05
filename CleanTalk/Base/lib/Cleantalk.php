@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkResponse.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkResponse.php';
 
 /**
  * Cleantalk Base class

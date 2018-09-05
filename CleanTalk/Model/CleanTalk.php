@@ -1,9 +1,9 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/Cleantalk.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkSFW.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/Cleantalk.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkSFW.php';
 
 class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
@@ -194,7 +194,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 
 		$ct_request = new CleantalkRequest();
 		$ct_request->auth_key = $ct_authkey;
-		$ct_request->agent = 'xenforo-25';
+		$ct_request->agent = 'xenforo-26';
 		$ct_request->response_lang = 'en';
 		$ct_request->js_on = $checkjs;
 		$ct_request->sender_info = $sender_info;

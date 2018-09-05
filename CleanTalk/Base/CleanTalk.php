@@ -1,9 +1,9 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/Cleantalk.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkHelper.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkRequest.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/library/CleanTalk/Base/lib/CleantalkSFW.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/Cleantalk.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkHelper.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkRequest.php';
+require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTalk/Base/lib/CleantalkSFW.php';
 
 class CleanTalk_Base_CleanTalk {
 		
@@ -318,7 +318,7 @@ class CleanTalk_Base_CleanTalk {
                         !empty($_POST['options']['cleantalk']['apikey'])
                 )
 		{
-				CleantalkHelper::api_method_send_empty_feedback($_POST['options']['cleantalk']['apikey'], 'xenforo-25');
+				CleantalkHelper::api_method_send_empty_feedback($_POST['options']['cleantalk']['apikey'], 'xenforo-26');
 
 			if (isset($_POST['options']['cleantalk']['enabled_sfw']) && intval($_POST['options']['cleantalk']['enabled_sfw']) == 1)
 			{
