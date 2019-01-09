@@ -57,7 +57,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 			
 			if (!isset($_COOKIE[$field_name]))
 				$checkjs = NULL;
-			elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray()))
+			elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue())
 				$checkjs = 1;
 			else
 				$checkjs = 0;
@@ -106,7 +106,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 			
 			if (!isset($_COOKIE[$field_name]))
 				$checkjs = NULL;
-			elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray()))
+			elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue())
 				$checkjs = 1;
 			else
 				$checkjs = 0;
@@ -150,7 +150,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 		
 		if (!isset($_COOKIE[$field_name]))
 			$checkjs = NULL;
-		elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray()))
+		elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue())
 			$checkjs = 1;
 		else
 			$checkjs = 0;

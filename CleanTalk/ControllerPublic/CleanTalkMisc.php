@@ -73,7 +73,7 @@ class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_Controller
 				
 				if (!isset($_COOKIE[$field_name]))
 					$checkjs = NULL;
-				elseif (in_array($_COOKIE[$field_name], CleanTalk_Base_CleanTalk::getCheckJSArray()))
+				elseif ($_COOKIE[$field_name] == CleanTalk_Base_CleanTalk::getCheckjsValue())
 					$checkjs = 1;
 				else
 					$checkjs = 0;

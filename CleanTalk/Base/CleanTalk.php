@@ -328,20 +328,6 @@ class CleanTalk_Base_CleanTalk {
 			}
 		}
     }
-    
-    /** Return Array of JS-keys for checking
-	*
-	* @return Array
-	*/
-	static public function getCheckJSArray() {
-		$options = XenForo_Application::getOptions();
-        $result=Array();
-        for($i=-5;$i<=1;$i++) {
-            $result[]=md5($options->get('cleantalk', 'apikey') . '+' . $options->get('contactEmailAddress') . date("Ymd",time()+86400*$i));
-        }
-        return $result;
-	}
-
     static public function getCheckjsDefaultValue() {
 	return '0';
     }
@@ -358,8 +344,6 @@ class CleanTalk_Base_CleanTalk {
 
 	if ($show_flag) {
 	    $show_flag = FALSE;
-	    $field_name = self::getCheckjsName();
-	    $ct_check_def = self::getCheckjsValue();
 	    $ct_check_value = self::getCheckjsValue();
 	    self::ctSetCookie();
 	    self::ctSFWTest();
@@ -378,6 +362,7 @@ class CleanTalk_Base_CleanTalk {
 	ctSetCookie("ct_fkp_timestamp", "0");
 	ctSetCookie("ct_pointer_data", "0");
 	ctSetCookie("ct_timezone", "0");
+	ctSetCookie("ct_checkjs", "%s");
 	
 	setTimeout(function(){
 		ctSetCookie("ct_timezone", d.getTimezoneOffset()/60*(-1));
@@ -444,7 +429,7 @@ class CleanTalk_Base_CleanTalk {
 		window.attachEvent("keydown", ctFunctionFirstKey);
 	}
 </script>';
-	    $ret_val = sprintf($js_template, $field_name, $ct_check_value);
+	    $ret_val = sprintf($js_template, $ct_check_value);
 	    if($options->get('cleantalk', 'link'))
 	    {
 	    	$ret_val.="<div style='width:100%;text-align:center'><a href='https://cleantalk.org/xenforo-antispam-addon'>XenForo spam</a> blocked by CleanTalk.</div>";
