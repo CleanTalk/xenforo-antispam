@@ -347,6 +347,7 @@ class CleanTalk_Base_CleanTalk {
 	    $ct_check_value = self::getCheckjsValue();
 	    self::ctSetCookie();
 	    self::ctSFWTest();
+	    self::apbct_remote_call__perform();
 	    $js_template = '<script>
 	var d = new Date(), 
 		ctTimeMs = new Date().getTime(),
@@ -490,5 +491,44 @@ class CleanTalk_Base_CleanTalk {
 			}	      				
 		}    	
     }
+
+	/**
+	 * Cleantalk inner function - perform remote call
+	 */
+	static public function apbct_remote_call__perform() {
+
+		$remote_calls = array('close_renew_banner', 'sfw_update','sfw_send_logs','update_plugin','update_settings');
+
+		$remote_action = $_GET['spbc_remote_call_action'];
+		$auth_key = trim(XenForo_Application::getOptions()->get('cleantalk','apikey'));
+
+		if(array_key_exists($remote_action, $remote_calls_config)) {
+
+			if(strtolower($_GET['spbc_remote_call_token']) == strtolower(md5($auth_key))){
+
+				// Close renew banner
+				if($_GET['spbc_remote_call_action'] == 'close_renew_banner'){
+					die('OK');
+				// SFW update
+				}elseif($_GET['spbc_remote_call_action'] == 'sfw_update'){
+					$sfw = new CleantalkSFW();				
+					$result = $sfw->sfw_update($auth_key);
+					die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
+				// SFW send logs
+				}elseif($_GET['spbc_remote_call_action'] == 'sfw_send_logs'){
+					$sfw = new CleantalkSFW();					
+					$result = $sfw->send_logs($auth_key);
+					die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error_string'])));
+				// Update plugin
+				}elseif($_GET['spbc_remote_call_action'] == 'update_plugin'){
+					//add_action('wp', 'apbct_update', 1);
+				}else
+					die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION_2')));
+			}else
+				die('FAIL '.json_encode(array('error' => 'WRONG_TOKEN')));
+		}else
+			die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION')));
+
+	}    
 
 }

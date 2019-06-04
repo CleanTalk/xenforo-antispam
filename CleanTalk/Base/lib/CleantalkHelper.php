@@ -245,26 +245,7 @@ class CleantalkHelper
 		
 		return $result;
 	}
-	
-	/**
-	 * Function gets information about renew notice
-	 *
-	 * @param string api_key
-	 * @return type
-	 */
-	static public function api_method__notice_validate_key($api_key, $do_check = true)
-	{
-		$request = array(
-			'method_name' => 'notice_validate_key',
-			'auth_key' => $api_key,		
-		);
 		
-		$result = self::api_send_request($request);
-		$result = $do_check ? self::api_check_response($result, 'notice_validate_key') : $result;
-		
-		return $result;
-	}
-	
 	/**
 	 * Function gets information about renew notice
 	 *
@@ -522,11 +503,6 @@ class CleantalkHelper
 		}
 		
 		// Pathces for different methods
-		
-		// mehod_name = notice_validate_key
-		if($method_name == 'notice_validate_key' && isset($result['valid'])){
-			return $result;
-		}
 		
 		// Other methods
 		if(isset($result['data']) && is_array($result['data'])){

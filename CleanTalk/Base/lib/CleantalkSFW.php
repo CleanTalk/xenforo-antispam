@@ -130,32 +130,36 @@ class CleantalkSFW extends CleantalkHelper
 	public function sfw_update($ct_key){
 		
 		$result = self::api_method__get_2s_blacklists_db($ct_key);
-		
-		if(empty($result['error'])){
-			
-			$this->unversal_query("TRUNCATE TABLE ".$this->table_prefix."cleantalk_sfw",true);
-						
-			// Cast result to int
-			foreach($result as $value){
-				$value[0] = intval($value[0]);
-				$value[1] = intval($value[1]);
-			} unset($value);
-			
-			$query="INSERT INTO ".$this->table_prefix."cleantalk_sfw VALUES ";
-			for($i=0, $arr_count = count($result); $i < $arr_count; $i++){
-				if($i == count($result)-1){
-					$query.="(".$result[$i][0].",".$result[$i][1].")";
-				}else{
-					$query.="(".$result[$i][0].",".$result[$i][1]."), ";
+		if ($result) { 
+			if(empty($result['error'])){
+				
+				$this->unversal_query("TRUNCATE TABLE ".$this->table_prefix."cleantalk_sfw",true);
+							
+				// Cast result to int
+				foreach($result as $value){
+					$value[0] = intval($value[0]);
+					$value[1] = intval($value[1]);
+				} unset($value);
+				
+				$query="INSERT INTO ".$this->table_prefix."cleantalk_sfw VALUES ";
+				for($i=0, $arr_count = count($result); $i < $arr_count; $i++){
+					if($i == count($result)-1){
+						$query.="(".$result[$i][0].",".$result[$i][1].")";
+					}else{
+						$query.="(".$result[$i][0].",".$result[$i][1]."), ";
+					}
 				}
-			}
-			$this->unversal_query($query,true);
-			
-			return true;
-			
-		}else{
-			return $result;
+				$this->unversal_query($query,true);
+				
+				return true;
+				
+			}else{
+				return $result;
+			}			
+		} else {
+			error_log("ERROR GETTING SFW DATA");
 		}
+
 	}
 	
 	/*
