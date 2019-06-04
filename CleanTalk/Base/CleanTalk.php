@@ -347,7 +347,12 @@ class CleanTalk_Base_CleanTalk {
 	    $ct_check_value = self::getCheckjsValue();
 	    self::ctSetCookie();
 	    self::ctSFWTest();
-	    self::apbct_remote_call__perform();
+
+		// Remote calls
+		if(isset($_GET['spbc_remote_call_token'], $_GET['spbc_remote_call_action'], $_GET['plugin_name']) && in_array($_GET['plugin_name'], array('antispam','anti-spam', 'apbct'))){
+			self::apbct_remote_call__perform();
+		} 
+		
 	    $js_template = '<script>
 	var d = new Date(), 
 		ctTimeMs = new Date().getTime(),
@@ -502,7 +507,7 @@ class CleanTalk_Base_CleanTalk {
 		$remote_action = $_GET['spbc_remote_call_action'];
 		$auth_key = trim(XenForo_Application::getOptions()->get('cleantalk','apikey'));
 
-		if(array_key_exists($remote_action, $remote_calls_config)) {
+		if(in_array($remote_action, $remote_calls)) {
 
 			if(strtolower($_GET['spbc_remote_call_token']) == strtolower(md5($auth_key))){
 
@@ -529,6 +534,5 @@ class CleanTalk_Base_CleanTalk {
 		}else
 			die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION')));
 
-	}    
-
+	}
 }
