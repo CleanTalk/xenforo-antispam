@@ -361,7 +361,7 @@ class CleanTalk_Base_CleanTalk {
 		ctMouseDataCounter = 0;
 	
 	function ctSetCookie(c_name, value) {
-		document.cookie = c_name + "=" + encodeURIComponent(value) + "; path=/";
+		document.cookie = c_name + "=" + encodeURIComponent(value) + "; path=/; samesite=lax";
 	}
 	
 	ctSetCookie("ct_ps_timestamp", Math.floor(new Date().getTime()/1000));
