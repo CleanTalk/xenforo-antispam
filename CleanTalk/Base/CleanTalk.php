@@ -361,7 +361,7 @@ class CleanTalk_Base_CleanTalk {
 		ctMouseDataCounter = 0;
 	
 	function ctSetCookie(c_name, value) {
-		document.cookie = c_name + "=" + encodeURIComponent(value) + "; path=/";
+		document.cookie = c_name + "=" + encodeURIComponent(value) + "; path=/; samesite=Lax";
 	}
 	
 	ctSetCookie("ct_ps_timestamp", Math.floor(new Date().getTime()/1000));
@@ -454,14 +454,14 @@ class CleanTalk_Base_CleanTalk {
         );
         // Pervious referer
         if(!empty($_SERVER['HTTP_REFERER'])){
-            setcookie('ct_prev_referer', $_SERVER['HTTP_REFERER'], 0, '/');
+            setcookie('ct_prev_referer', $_SERVER['HTTP_REFERER'], 0, '/; samesite=Lax');
             $cookie_test_value['cookies_names'][] = 'ct_prev_referer';
             $cookie_test_value['check_value'] .= $_SERVER['HTTP_REFERER'];
         }           
 
         // Cookies test
         $cookie_test_value['check_value'] = md5($cookie_test_value['check_value']);
-        setcookie('ct_cookies_test', json_encode($cookie_test_value), 0, '/');	    	
+        setcookie('ct_cookies_test', json_encode($cookie_test_value), 0, '/; samesite=Lax');	    	
     }
 
     static public function ctSFWTest()
