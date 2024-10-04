@@ -9,7 +9,7 @@ require_once XenForo_Application::getInstance()->getRootDir().'/library/CleanTal
  * @package Cleantalk
  * @subpackage Base
  * @author Cleantalk team (welcome@cleantalk.org)
- * @copyright (C) 2014 CleanTalk team (http://cleantalk.org)
+ * @copyright (C) 2014 CleanTalk team (https://cleantalk.org)
  * @license GNU/GPL: http://www.gnu.org/copyleft/gpl.html
  * @see https://github.com/CleanTalk/php-antispam 
  *
@@ -564,7 +564,7 @@ class Cleantalk
     }
 
     /**
-     * Function to get the message hash from Cleantalk.ru comment
+     * Function to get the message hash from Cleantalk.org comment
      * @param $message
      * @return null
      */
@@ -579,7 +579,7 @@ class Cleantalk
     }
 
     /**
-     * Function adds to the post comment Cleantalk.ru
+     * Function adds to the post comment Cleantalk.org
      * @param $message
      * @param $comment
      * @return string
@@ -590,7 +590,7 @@ class Cleantalk
     }
 
     /**
-     * Function deletes the comment Cleantalk.ru
+     * Function deletes the comment Cleantalk.org
      * @param $message
      * @return mixed
      */

@@ -139,8 +139,8 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 		$ct_ws = $dataRegistryModel->get('cleantalk_ws');
 		if (!$ct_ws) {
 			$ct_ws = array(
-				'work_url' => 'http://moderate.cleantalk.ru',
-				'server_url' => 'http://moderate.cleantalk.ru',
+				'work_url' => 'https://moderate.cleantalk.org',
+				'server_url' => 'https://moderate.cleantalk.org',
 				'server_ttl' => 0,
 				'server_changed' => 0
 			);
