@@ -1,5 +1,8 @@
 # xenforo-antispam
 Xenforo anti-spam extension.
+
+If you find this project useful, please consider starring ⭐ it on GitHub — it helps us grow and support development!
+
 # Version 2.6
 
 ## How to install
