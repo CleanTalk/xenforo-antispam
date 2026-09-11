@@ -291,7 +291,7 @@ class CleanTalk_Model_CleanTalk extends XFCP_CleanTalk_Model_CleanTalk {
 				$dataRegistryModel->set('cleantalk_' . $timelabels_key, array(time()));
 					
 				$mail = XenForo_Mail::create('cleantalk_error', array(
-						'plainText' => $ret_val['errstr'],
+						'plainText' => $ret_val['errstr'] ? $ret_val['errstr'] : 'CleanTalk service unavailable',
 						'htmlText' => nl2br($ret_val['errstr'])
 					)
 				);

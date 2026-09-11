@@ -186,7 +186,7 @@ class CleanTalk_ControllerPublic_CleanTalkMisc extends XFCP_CleanTalk_Controller
 						$dataRegistryModel->set('cleantalk_' . $timelabels_key, array(time()));
 							
 						$mail = XenForo_Mail::create('cleantalk_error', array(
-								'plainText' => 1,
+								'plainText' => $ct_result->comment ? $ct_result->comment : 'CleanTalk service unavailable',
 								'htmlText' => nl2br($ct_result->comment)
 							)
 						);
